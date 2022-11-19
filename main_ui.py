@@ -99,7 +99,30 @@ class Window(QMainWindow):
         button.clicked.connect(self._customer_validation)
 
     def _customer_validation(self):
-        self._cust.validate()
+        if self._cust:
+            self._set_customer()
+            try:
+                self._cust.validate()
+            except Exception as e:
+                dlg = QMessageBox(self)
+                dlg.setWindowTitle("Validation Problem")
+                dlg.setText(str(e))
+                dlg.exec()
+                pass
+        else:
+            dlg = QMessageBox(self)
+            dlg.setWindowTitle("Warning")
+            dlg.setText("Select type of customer")
+            dlg.exec()
+
+    def _set_customer(self):
+        if self._cust:
+            self._cust.customer_type = self.cust_type
+            self._cust.customer_name = self.customer_name.text()
+            self._cust.phone_number = self.phone_number.text()
+            self._cust.bill_amount = self.bill_amount.text()
+            self._cust.bill_date = self.bill_date.text()
+            self._cust.address = self.address.toPlainText()
 
 
 def main():
