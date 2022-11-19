@@ -54,7 +54,7 @@ class Window(QMainWindow):
     # Factory design pattern
     def _combobox_select(self):
         self.cust_type: str = self.customer_combo_box.currentText()
-        self._cust: CustomerBase = FactoryCustomer.create(self.cust_type)
+        self._cust: CustomerBase = FactoryCustomer().create(self.cust_type)
 
     def _createCustomerNameEntry(self):
         layout = QFormLayout()
