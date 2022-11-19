@@ -1,9 +1,10 @@
 import datetime
 
 from abc import ABC, abstractmethod
+from interface_customer import ICustomer
 
 
-class CustomerBase(ABC):
+class CustomerBase(ICustomer, ABC):
     def __init__(self, customer_name: str = None, phone_number: str = None, bill_amount: str = None,
                  bill_date: str = None, address: str = None):
         self.customer_name: str = customer_name

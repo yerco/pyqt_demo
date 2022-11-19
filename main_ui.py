@@ -17,7 +17,7 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem
 )
 
-from middle_layer import CustomerBase
+from interface_customer import ICustomer
 from factory_customer import FactoryCustomer
 
 
@@ -41,7 +41,7 @@ class Window(QMainWindow):
         self._createValidateButton()
         self._createDataTable()
 
-        self._cust: CustomerBase = None
+        self._cust: ICustomer = None
 
     def _createSelectCustomerCombo(self):
         self.customer_combo_box = QComboBox()
