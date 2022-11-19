@@ -17,6 +17,8 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem
 )
 
+from middle_layer import Customer, Lead, CustomerBase
+
 
 # mixed naming conventions due to Qt's camel case
 class Window(QMainWindow):
@@ -48,6 +50,10 @@ class Window(QMainWindow):
 
     def _combobox_select(self, txt_selection):
         self.cust_type = self.customer_combo_box.currentText()
+        if self.cust_type == "Customer":
+            self._cust = Customer()
+        if self.cust_type == "Lead":
+            self._lead = Lead()
 
     def _createCustomerNameEntry(self):
         layout = QFormLayout()
@@ -92,7 +98,10 @@ class Window(QMainWindow):
         button.clicked.connect(self._customer_validation)
 
     def _customer_validation(self):
-        ...
+        if self.cust_type == "Customer":
+            self._cust.validate()
+        if self.cust_type == "Lead":
+            self._lead.validate()
 
 
 def main():
