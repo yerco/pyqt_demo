@@ -17,7 +17,8 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem
 )
 
-from middle_layer import Customer, Lead, CustomerBase
+from middle_layer import CustomerBase
+from factory_customer import FactoryCustomer
 
 
 # mixed naming conventions due to Qt's camel case
@@ -50,12 +51,10 @@ class Window(QMainWindow):
         self.generalLayout.addLayout(layout, 0, 0)
         self.customer_combo_box.activated.connect(self._combobox_select)
 
-    def _combobox_select(self, txt_selection):
-        self.cust_type = self.customer_combo_box.currentText()
-        if self.cust_type == "Customer":
-            self._cust = Customer()
-        if self.cust_type == "Lead":
-            self._cust = Lead()
+    # Factory design pattern
+    def _combobox_select(self):
+        self.cust_type: str = self.customer_combo_box.currentText()
+        self._cust: CustomerBase = FactoryCustomer.create(self.cust_type)
 
     def _createCustomerNameEntry(self):
         layout = QFormLayout()
