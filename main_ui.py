@@ -40,6 +40,8 @@ class Window(QMainWindow):
         self._createValidateButton()
         self._createDataTable()
 
+        self._cust: CustomerBase = None
+
     def _createSelectCustomerCombo(self):
         self.customer_combo_box = QComboBox()
         self.customer_combo_box.addItems(["", "Customer", "Lead"])
@@ -53,7 +55,7 @@ class Window(QMainWindow):
         if self.cust_type == "Customer":
             self._cust = Customer()
         if self.cust_type == "Lead":
-            self._lead = Lead()
+            self._cust = Lead()
 
     def _createCustomerNameEntry(self):
         layout = QFormLayout()
@@ -98,10 +100,7 @@ class Window(QMainWindow):
         button.clicked.connect(self._customer_validation)
 
     def _customer_validation(self):
-        if self.cust_type == "Customer":
-            self._cust.validate()
-        if self.cust_type == "Lead":
-            self._lead.validate()
+        self._cust.validate()
 
 
 def main():
