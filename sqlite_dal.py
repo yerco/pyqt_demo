@@ -11,8 +11,8 @@ class TemplateSqlite(IDal, ABC):
 
     _any_types: list = list()
 
-    def __init__(self, connection_string: str):
-        self._connection_string = connection_string
+    def __init__(self):
+        self._connection_string = "data.db"
 
     def add(self, obj: typing.Any) -> None:
         if obj not in self._any_types:

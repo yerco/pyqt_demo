@@ -1,5 +1,6 @@
 import typing
 from customer_dal import CustomerDAL
+from sqlalchemy_dal import SQLAlchemyDAL
 
 
 class FactoryDAL:
@@ -10,7 +11,8 @@ class FactoryDAL:
         # Lazy loading design pattern
         if not self._objs:
             self._objs = {
-                "CustomerDAL": CustomerDAL("data.db")
+                "CustomerDAL": CustomerDAL(),
+                "SQLAlchemyDAL": SQLAlchemyDAL()
             }
 
         # RIP design pattern

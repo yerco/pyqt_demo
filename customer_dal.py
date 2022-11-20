@@ -9,8 +9,8 @@ from factory_customer import FactoryCustomer
 
 class CustomerDAL(TemplateSqlite):
 
-    def __init__(self, connection_string: str):
-        super().__init__(connection_string)
+    def __init__(self):
+        super().__init__()
 
     @dispatch(ICustomer)
     def _execute_command(self, obj: typing.Any) -> None:

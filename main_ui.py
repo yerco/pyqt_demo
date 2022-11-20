@@ -1,5 +1,4 @@
 import sys
-import datetime
 
 from PyQt6.QtWidgets import (
     QApplication,
@@ -19,7 +18,6 @@ from PyQt6.QtWidgets import (
 
 from interface_customer import ICustomer
 from factory_customer import FactoryCustomer
-from customer_dal import CustomerDAL
 from factory_dal import FactoryDAL
 
 
@@ -27,6 +25,10 @@ from factory_dal import FactoryDAL
 class Window(QMainWindow):
     def __init__(self):
         super().__init__(parent=None)
+
+        # Default DAL
+        self.dal_type = "CustomerDAL"
+
         self.setWindowTitle("PyQt Demo")
         #self.setFixedSize(WINDOW_SIZE, WINDOW_SIZE)
         self.generalLayout = QGridLayout()
@@ -43,6 +45,7 @@ class Window(QMainWindow):
         self._createValidateButton()
         self._createDataTable()
         self._createAddButton()
+        self._createSelectDALCombo()  # loading default DAL
         self._loadGrid()
 
         self._cust: ICustomer = None
@@ -59,6 +62,20 @@ class Window(QMainWindow):
     def _combobox_select(self):
         self.cust_type: str = self.customer_combo_box.currentText()
         self._cust: ICustomer = FactoryCustomer().create(self.cust_type)
+
+    def _createSelectDALCombo(self):
+        # Default DAL CustomerDAL
+        self.dal = FactoryDAL().create(self.dal_type)
+        self.combo_box_dal = QComboBox()
+        self.combo_box_dal.addItems(["CustomerDAL", "SQLAlchemyDAL"])
+        layout = QFormLayout()
+        layout.addRow(QLabel("DAL"), self.combo_box_dal)
+        self.generalLayout.addLayout(layout, 0, 2, 1, 1)
+        self.combo_box_dal.activated.connect(self._combobox_dal)
+
+    def _combobox_dal(self):
+        self.dal_type = self.combo_box_dal.currentText()
+        self.dal = FactoryDAL().create(self.dal_type)
 
     def _createCustomerNameEntry(self):
         layout = QFormLayout()
@@ -136,17 +153,15 @@ class Window(QMainWindow):
     def _add_record(self):
         if self._cust:
             self._set_customer()
-            dal: CustomerDAL = FactoryDAL().create("CustomerDAL")
-            dal.add(self._cust)  # in memory
-            dal.save()  # physical
+            self.dal.add(self._cust)  # in memory
+            self.dal.save()  # physical
             self._loadGrid()
             self._clear_customer_dialog()
 
     def _loadGrid(self):
         self.table = QTableWidget()
         self.table.setRowCount(0)
-        dal: CustomerDAL = FactoryDAL().create("CustomerDAL")
-        custs = dal.search()  # from the DB
+        custs = self.dal.search()  # from the DB
         self.table.setRowCount(len(custs))
         self.table.setColumnCount(7)
         self.table.setHorizontalHeaderLabels(["customer type", "customer name", "phone", "bill amount",
