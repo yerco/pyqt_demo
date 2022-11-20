@@ -20,6 +20,7 @@ from PyQt6.QtWidgets import (
 from interface_customer import ICustomer
 from factory_customer import FactoryCustomer
 from customer_dal import CustomerDAL
+from factory_dal import FactoryDAL
 
 
 # mixed naming conventions due to Qt's camel case
@@ -42,6 +43,7 @@ class Window(QMainWindow):
         self._createValidateButton()
         self._createDataTable()
         self._createAddButton()
+        self._loadGrid()
 
         self._cust: ICustomer = None
 
@@ -132,10 +134,51 @@ class Window(QMainWindow):
         button.clicked.connect(self._add_record)
 
     def _add_record(self):
-        self._set_customer()
-        dal: CustomerDAL = FactoryCustomer().create("CustomerDAL")
-        dal.add(self._cust)  # in memory
-        dal.save()  # physical
+        if self._cust:
+            self._set_customer()
+            dal: CustomerDAL = FactoryDAL().create("CustomerDAL")
+            dal.add(self._cust)  # in memory
+            dal.save()  # physical
+            self._loadGrid()
+            self._clear_customer_dialog()
+
+    def _loadGrid(self):
+        self.table = QTableWidget()
+        self.table.setRowCount(0)
+        dal: CustomerDAL = FactoryDAL().create("CustomerDAL")
+        custs = dal.search()  # from the DB
+        self.table.setRowCount(len(custs))
+        self.table.setColumnCount(7)
+        self.table.setHorizontalHeaderLabels(["customer type", "customer name", "phone", "bill amount",
+                                              "bill date", "address", "id"])
+        for i, field in enumerate(custs):
+            customer_type = QTableWidgetItem(field.customer_type)
+            self.table.setItem(i, 0, customer_type)
+            customer_name = QTableWidgetItem(field.customer_name)
+            self.table.setItem(i, 1, customer_name)
+            phone_number = QTableWidgetItem(field.phone_number)
+            self.table.setItem(i, 2, phone_number)
+            bill_amount = QTableWidgetItem(field.bill_amount)
+            self.table.setItem(i, 3, bill_amount)
+            bill_date = QTableWidgetItem(field.bill_date)
+            self.table.setItem(i, 4, bill_date)
+            address = QTableWidgetItem(field.address)
+            self.table.setItem(i, 5, address)
+            pk = QTableWidgetItem(str(field.id))
+            self.table.setItem(i, 6, pk)
+        self.generalLayout.addWidget(self.table, 4, 0, 1, 3)
+        self.table.verticalHeader().sectionClicked.connect(self._clicked_row)
+
+    def _clicked_row(self):
+        ...
+
+    def _clear_customer_dialog(self):
+        self.customer_combo_box.update()
+        self.customer_name.clear()
+        self.phone_number.clear()
+        self.bill_amount.clear()
+        self.bill_amount.clear()
+        self.address.clear()
 
 
 def main():

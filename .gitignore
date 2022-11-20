@@ -2,3 +2,4 @@
 pyqt_demo.iml
 pyqt_demo
 __pycache__/
+data.db
