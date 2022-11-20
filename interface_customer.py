@@ -16,3 +16,7 @@ class ICustomer(ABC):
     bill_amount: str
     bill_date: str
     address: str
+
+    @abstractmethod
+    def validate(self) -> None:
+        raise NotImplementedError
