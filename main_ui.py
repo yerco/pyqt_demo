@@ -19,6 +19,7 @@ from PyQt6.QtWidgets import (
 
 from interface_customer import ICustomer
 from factory_customer import FactoryCustomer
+from customer_dal import CustomerDAL
 
 
 # mixed naming conventions due to Qt's camel case
@@ -40,6 +41,7 @@ class Window(QMainWindow):
         self._createAddressEntry()
         self._createValidateButton()
         self._createDataTable()
+        self._createAddButton()
 
         self._cust: ICustomer = None
 
@@ -123,6 +125,17 @@ class Window(QMainWindow):
             self._cust.bill_amount = self.bill_amount.text()
             self._cust.bill_date = self.bill_date.text()
             self._cust.address = self.address.toPlainText()
+
+    def _createAddButton(self):
+        button = QPushButton("Add")
+        self.generalLayout.addWidget(button, 3, 1, 1, 1)
+        button.clicked.connect(self._add_record)
+
+    def _add_record(self):
+        self._set_customer()
+        dal: CustomerDAL = FactoryCustomer().create("CustomerDAL")
+        dal.add(self._cust)  # in memory
+        dal.save()  # physical
 
 
 def main():

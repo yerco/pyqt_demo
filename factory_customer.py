@@ -1,20 +1,23 @@
+import typing
+
 from middle_layer import Customer, Lead
-from interface_customer import ICustomer
 from validation_algorithms import CustomerValidationAll, LeadValidation
+from customer_dal import CustomerDAL
 
 
 # Simple factory design pattern
 class FactoryCustomer:
 
-    _customers: dict = dict()
+    _objs: dict = dict()
 
-    def create(self, customer_type: str) -> ICustomer:
+    def create(self, _type: str) -> typing.Any:
         # Lazy loading design pattern
-        if not self._customers:
-            self._customers = {
+        if not self._objs:
+            self._objs = {
                 "Customer": Customer(validation=CustomerValidationAll()),
-                "Lead": Lead(validation=LeadValidation())
+                "Lead": Lead(validation=LeadValidation()),
+                "CustomerDAL": CustomerDAL("data.db")
             }
 
         # RIP design pattern
-        return self._customers[customer_type]
+        return self._objs[_type]
