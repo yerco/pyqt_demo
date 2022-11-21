@@ -44,4 +44,7 @@ class SQLAlchemyDAL(IDal):
         self._session.commit()
 
     def get_data(self) -> list[typing.Any]:
-        pass
+        data = self._session.identity_map.values()
+        # appending data just for showing them at the grid purposes
+        data.append(self.search())
+        return data[0]
