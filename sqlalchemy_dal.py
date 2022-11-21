@@ -42,3 +42,6 @@ class SQLAlchemyDAL(IDal):
 
     def save(self) -> None:
         self._session.commit()
+
+    def get_data(self) -> list[typing.Any]:
+        pass

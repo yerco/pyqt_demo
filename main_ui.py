@@ -42,7 +42,8 @@ class Window(QMainWindow):
         self._createBillAmountEntry()
         self._createBillDateEntry()
         self._createAddressEntry()
-        self._createValidateButton()
+        # self._createValidateButton()
+        self._createSaveButton()
         self._createDataTable()
         self._createAddButton()
         self._createSelectDALCombo()  # loading default DAL
@@ -147,21 +148,45 @@ class Window(QMainWindow):
 
     def _createAddButton(self):
         button = QPushButton("Add")
-        self.generalLayout.addWidget(button, 3, 1, 1, 1)
+        self.generalLayout.addWidget(button, 3, 0, 1, 1)
         button.clicked.connect(self._add_record)
 
     def _add_record(self):
         if self._cust:
-            self._set_customer()
-            self.dal.add(self._cust)  # in memory
-            self.dal.save()  # physical
-            self._loadGrid()
-            self._clear_customer_dialog()
+            try:
+                self._set_customer()
+                self.dal.add(self._cust)  # in memory
+                self._loadGridInMemory()
+                self._clear_customer_dialog()
+            except Exception as e:
+                dlg = QMessageBox(self)
+                dlg.setWindowTitle("Validation Problem")
+                dlg.setText(str(e))
+                dlg.exec()
+                pass
+
+    def _createSaveButton(self):
+        button = QPushButton("Save")
+        self.generalLayout.addWidget(button, 3, 1, 1, 1)
+        button.clicked.connect(self._customer_save)
+
+    def _customer_save(self):
+        self.dal.save()
+        self._clear_customer_dialog()
+        self._loadGrid()
+
+    def _loadGridInMemory(self):
+        self.table = QTableWidget()
+        custs = self.dal.get_data()  # in memory
+        self._fill_grid(custs)
 
     def _loadGrid(self):
         self.table = QTableWidget()
         self.table.setRowCount(0)
         custs = self.dal.search()  # from the DB
+        self._fill_grid(custs)
+
+    def _fill_grid(self, custs):
         self.table.setRowCount(len(custs))
         self.table.setColumnCount(7)
         self.table.setHorizontalHeaderLabels(["customer type", "customer name", "phone", "bill amount",

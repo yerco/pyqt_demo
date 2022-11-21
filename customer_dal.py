@@ -29,7 +29,6 @@ class CustomerDAL(TemplateSqlite):
         self.cursor.execute(query)
         records = self.cursor.fetchall()
         cust = FactoryCustomer().create("Customer")
-        custs: list = list()
         for record in records:
             # mapping
             cust.id = record[0]
@@ -39,5 +38,5 @@ class CustomerDAL(TemplateSqlite):
             cust.bill_amount = record[4]
             cust.bill_date = record[5]
             cust.address = record[6]
-            custs.append(copy.copy(cust))
-        return custs
+            self._any_types.append(copy.copy(cust))
+        return self._any_types

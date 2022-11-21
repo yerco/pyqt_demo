@@ -20,3 +20,7 @@ class IDal(ABC):
     @abstractmethod
     def save(self) -> None:  # physical commit
         raise NotImplementedError
+
+    @abstractmethod
+    def get_data(self) -> list[typing.Any]:
+        raise NotImplementedError

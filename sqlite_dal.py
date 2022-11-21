@@ -16,6 +16,7 @@ class TemplateSqlite(IDal, ABC):
 
     def add(self, obj: typing.Any) -> None:
         if obj not in self._any_types:
+            obj.validate()
             self._any_types.append(obj)
 
     def update(self, obj: typing.Any) -> None:
@@ -25,8 +26,8 @@ class TemplateSqlite(IDal, ABC):
         return self.execute()
 
     def save(self) -> None:
-        for o in self._any_types:
-            self.execute(o)
+        # only the last in memory
+        self.execute(self._any_types[-1])
         self._any_types.clear()
 
     # Fixed sequence, Template design pattern
@@ -60,3 +61,7 @@ class TemplateSqlite(IDal, ABC):
 
     def _close(self):
         self.con.close()
+
+    # in memory
+    def get_data(self) -> list[typing.Any]:
+        return self._any_types
