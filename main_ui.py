@@ -52,7 +52,7 @@ class Window(QMainWindow):
 
     def _createSelectCustomerCombo(self):
         self.customer_combo_box = QComboBox()
-        self.customer_combo_box.addItems(["", "Customer", "Lead"])
+        self.customer_combo_box.addItems(["", "Customer", "Lead", "SelfService", "HomeDelivery"])
         layout = QFormLayout()
         layout.addRow(QLabel("Customer Type"), self.customer_combo_box)
         self.generalLayout.addLayout(layout, 0, 0)

@@ -1,13 +1,6 @@
-from interface_customer import CustomerBase
+from interface_customer import CustomerBase, IValidation
 
 
 class Customer(CustomerBase):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-
-class Lead(CustomerBase):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, validation: IValidation, _customer_type, *args, **kwargs):
+        super().__init__(validation=validation, customer_type=_customer_type, *args, **kwargs)
